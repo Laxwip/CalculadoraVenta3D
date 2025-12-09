@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Homepage.css';
 
 export default function Homepage() {
@@ -9,8 +9,15 @@ export default function Homepage() {
     const filamento = parseFloat(document.getElementById("filamento").value) || 0; // gramos
     const unidades = parseInt(document.getElementById("unidades").value) || 1;
 
-    const horas = parseInt(document.getElementById("horas").value) || 0;
-    const minutos = parseInt(document.getElementById("minutos").value) || 0;
+    // Si el campo está vacío, se interpreta como 0
+    const horas = document.getElementById("horas").value ? parseInt(document.getElementById("horas").value) : 0;
+    const minutos = document.getElementById("minutos").value ? parseInt(document.getElementById("minutos").value) : 0;
+
+    // Guardar datos en localStorage
+    localStorage.setItem("filamento", filamento);
+    localStorage.setItem("unidades", unidades);
+    localStorage.setItem("horas", horas);
+    localStorage.setItem("minutos", minutos);
 
     // Parámetros fijos
     const COSTO_FILAMENTO_GR = 0.05; // soles por gramo
@@ -20,7 +27,7 @@ export default function Homepage() {
     const ADITIVOS_UND = 0.55; // soles por unidad
     const PROCESO_POST = 5; // soles fijos por lote de 10 und → se divide entre unidades
 
-    // Tiempo total en minutos
+    // Tiempo total en minutos (funciona con horas vacías)
     const totalMin = (horas * 60) + minutos;
 
     // Cálculos
@@ -63,6 +70,33 @@ export default function Homepage() {
     `;
   };
 
+  const limpiarCampos = () => {
+    document.getElementById("filamento").value = "";
+    document.getElementById("unidades").value = "";
+    document.getElementById("horas").value = "";
+    document.getElementById("minutos").value = "";
+    document.getElementById("resultado").innerText = "";
+
+    // Limpiar localStorage
+    localStorage.removeItem("filamento");
+    localStorage.removeItem("unidades");
+    localStorage.removeItem("horas");
+    localStorage.removeItem("minutos");
+  };
+
+  // Al cargar la página, recuperar datos guardados
+  useEffect(() => {
+    const filamento = localStorage.getItem("filamento");
+    const unidades = localStorage.getItem("unidades");
+    const horas = localStorage.getItem("horas");
+    const minutos = localStorage.getItem("minutos");
+
+    if (filamento) document.getElementById("filamento").value = filamento;
+    if (unidades) document.getElementById("unidades").value = unidades;
+    if (horas) document.getElementById("horas").value = horas;
+    if (minutos) document.getElementById("minutos").value = minutos;
+  }, []);
+
   return (
     <div className="homepage">
       <h1>Costo Final</h1>
@@ -71,7 +105,7 @@ export default function Homepage() {
         {/* Filamento */}
         <div>
           <label>Gramos de filamento:</label>
-          <input type="number" id="filamento" />
+          <input type="number" id="filamento" step="0.01" /> {/* permite decimales */}
         </div>
 
         <div>
@@ -83,25 +117,26 @@ export default function Homepage() {
         <div>
           <label>Tiempo </label>
           <input
-            type="text"
+            type="number"
             id="horas"
-            maxLength="2"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            style={{ width: "2.5em", textAlign: "center" }}
+            min="0"
+            step="1"
+            style={{ width: "3em", textAlign: "center" }}
           />
           <label>:</label>
           <input
-            type="text"
+            type="number"
             id="minutos"
-            maxLength="2"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            style={{ width: "2.5em", textAlign: "center" }}
+            min="0"
+            step="1"
+            style={{ width: "3em", textAlign: "center" }}
           />
         </div>
 
         <button type="submit">Calcular</button>
+        <button type="button" onClick={limpiarCampos} style={{ marginLeft: "10px" }}>
+          Limpiar
+        </button>
       </form>
 
       <h2>Resultados</h2>
