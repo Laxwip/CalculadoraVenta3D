@@ -1,0 +1,35 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de editores
+.vscode/
+.idea/
+*.swp
+
+# Dependencias
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Archivos de compilación / build
+dist/
+build/
+out/
+*.log
+
+# Entornos y configuración local
+.env
+.env.*
+*.local
+
+# Archivos temporales
+*.tmp
+*.bak
+*.lock
+
+# Cobertura y pruebas
+coverage/
+*.coverage
+*.lcov

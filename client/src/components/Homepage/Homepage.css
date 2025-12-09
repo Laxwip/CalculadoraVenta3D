@@ -1,0 +1,14 @@
+.Homepage{
+  width: 100%;
+  /* height: 100%; */
+  padding: 1rem 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 1;
+  text-align: center;
+}
