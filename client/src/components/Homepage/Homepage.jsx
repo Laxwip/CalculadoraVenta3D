@@ -9,39 +9,44 @@ export default function Homepage() {
     const filamento = parseFloat(document.getElementById("filamento").value) || 0; // gramos
     const unidades = parseInt(document.getElementById("unidades").value) || 1;
 
-    // Si el campo está vacío, se interpreta como 0
+    // Tiempo de impresión
     const horas = document.getElementById("horas").value ? parseInt(document.getElementById("horas").value) : 0;
     const minutos = document.getElementById("minutos").value ? parseInt(document.getElementById("minutos").value) : 0;
+
+    // Tiempo de postprocesado
+    const horasPost = document.getElementById("horasPost").value ? parseInt(document.getElementById("horasPost").value) : 0;
+    const minutosPost = document.getElementById("minutosPost").value ? parseInt(document.getElementById("minutosPost").value) : 0;
 
     // Guardar datos en localStorage
     localStorage.setItem("filamento", filamento);
     localStorage.setItem("unidades", unidades);
     localStorage.setItem("horas", horas);
     localStorage.setItem("minutos", minutos);
+    localStorage.setItem("horasPost", horasPost);
+    localStorage.setItem("minutosPost", minutosPost);
 
     // Parámetros fijos
-    const COSTO_FILAMENTO_GR = 0.05; // soles por gramo
-    const COSTO_ELECTRICIDAD_MIN = 0.0017; // soles por minuto
-    const COSTO_MANTENIMIENTO_MIN = 0.0353; // soles por minuto
-    const COSTO_AMORTIZACION_MIN = 0.004; // soles por minuto
-    const ADITIVOS_UND = 0.55; // soles por unidad
-    const PROCESO_POST = 5; // soles fijos por lote de 10 und → se divide entre unidades
+    const COSTO_FILAMENTO_GR = 0.057; // soles por gramo
+    const COSTO_ELECTRICIDAD_MIN = 0.00081; // soles por minuto
+    const COSTO_AMORTIZACION_MIN = 0.0143; // soles por minuto (incluye mantenimiento)
+    const ADITIVOS_UND = 0.5; // soles por unidad
+    const COSTO_POST_MIN = 0.09; // soles por minuto de postprocesado
 
-    // Tiempo total en minutos (funciona con horas vacías)
+    // Tiempo total en minutos
     const totalMin = (horas * 60) + minutos;
+    const totalPostMin = (horasPost * 60) + minutosPost;
 
     // Cálculos
     const costoFilamento = unidades > 0 ? (filamento * COSTO_FILAMENTO_GR) / unidades : 0;
     const costoElectricidad = unidades > 0 ? (totalMin * COSTO_ELECTRICIDAD_MIN) / unidades : 0;
-    const costoMantenimiento = unidades > 0 ? (totalMin * COSTO_MANTENIMIENTO_MIN) / unidades : 0;
     const costoAmortizacion = unidades > 0 ? (totalMin * COSTO_AMORTIZACION_MIN) / unidades : 0;
     const costoAditivos = ADITIVOS_UND;
-    const costoProceso = unidades > 0 ? PROCESO_POST / unidades : 0;
+    const costoPost = unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
 
     // Total base
-    const subtotal = costoFilamento + costoElectricidad + costoMantenimiento + costoAmortizacion + costoAditivos + costoProceso;
+    const subtotal = costoFilamento + costoElectricidad + costoAmortizacion + costoAditivos + costoPost;
 
-    // Margen de corrección (ejemplo: *1.1111)
+    // Margen de corrección
     const total = subtotal * 1.1111;
 
     // Multiplicadores finales
@@ -54,10 +59,9 @@ export default function Homepage() {
     document.getElementById("resultado").innerText = `
       Filamento: ${costoFilamento.toFixed(2)}
       Electricidad: ${costoElectricidad.toFixed(2)}
-      Mantenimiento: ${costoMantenimiento.toFixed(2)}
       Amortización: ${costoAmortizacion.toFixed(2)}
       Aditivos: ${costoAditivos.toFixed(2)}
-      Proceso/Post: ${costoProceso.toFixed(2)}
+      Postprocesado: ${costoPost.toFixed(2)}
       -------------------------
       Subtotal: ${subtotal.toFixed(2)}
       Total (x1.1111): ${total.toFixed(2)}
@@ -75,6 +79,8 @@ export default function Homepage() {
     document.getElementById("unidades").value = "";
     document.getElementById("horas").value = "";
     document.getElementById("minutos").value = "";
+    document.getElementById("horasPost").value = "";
+    document.getElementById("minutosPost").value = "";
     document.getElementById("resultado").innerText = "";
 
     // Limpiar localStorage
@@ -82,6 +88,8 @@ export default function Homepage() {
     localStorage.removeItem("unidades");
     localStorage.removeItem("horas");
     localStorage.removeItem("minutos");
+    localStorage.removeItem("horasPost");
+    localStorage.removeItem("minutosPost");
   };
 
   // Al cargar la página, recuperar datos guardados
@@ -90,11 +98,15 @@ export default function Homepage() {
     const unidades = localStorage.getItem("unidades");
     const horas = localStorage.getItem("horas");
     const minutos = localStorage.getItem("minutos");
+    const horasPost = localStorage.getItem("horasPost");
+    const minutosPost = localStorage.getItem("minutosPost");
 
     if (filamento) document.getElementById("filamento").value = filamento;
     if (unidades) document.getElementById("unidades").value = unidades;
     if (horas) document.getElementById("horas").value = horas;
     if (minutos) document.getElementById("minutos").value = minutos;
+    if (horasPost) document.getElementById("horasPost").value = horasPost;
+    if (minutosPost) document.getElementById("minutosPost").value = minutosPost;
   }, []);
 
   return (
@@ -105,7 +117,7 @@ export default function Homepage() {
         {/* Filamento */}
         <div>
           <label>Gramos de filamento:</label>
-          <input type="number" id="filamento" step="0.01" /> {/* permite decimales */}
+          <input type="number" id="filamento" step="0.01" />
         </div>
 
         <div>
@@ -113,24 +125,20 @@ export default function Homepage() {
           <input type="number" id="unidades" />
         </div>
 
-        {/* Tiempo compartido */}
+        {/* Tiempo de impresión */}
         <div>
-          <label>Tiempo </label>
-          <input
-            type="number"
-            id="horas"
-            min="0"
-            step="1"
-            style={{ width: "3em", textAlign: "center" }}
-          />
+          <label>Tiempo impresión </label>
+          <input type="number" id="horas" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
-          <input
-            type="number"
-            id="minutos"
-            min="0"
-            step="1"
-            style={{ width: "3em", textAlign: "center" }}
-          />
+          <input type="number" id="minutos" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+        </div>
+
+        {/* Tiempo de postprocesado */}
+        <div>
+          <label>Tiempo postprocesado </label>
+          <input type="number" id="horasPost" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+          <label>:</label>
+          <input type="number" id="minutosPost" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
         </div>
 
         <button type="submit">Calcular</button>
