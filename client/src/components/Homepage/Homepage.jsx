@@ -8,6 +8,7 @@ export default function Homepage() {
 
     const filamento = parseFloat(document.getElementById("filamento").value) || 0; // gramos
     const unidades = parseInt(document.getElementById("unidades").value) || 1;
+    const tipoFilamento = document.getElementById("tipoFilamento").value;
 
     // Tiempo de impresión
     const horas = document.getElementById("horas").value ? parseInt(document.getElementById("horas").value) : 0;
@@ -24,13 +25,22 @@ export default function Homepage() {
     localStorage.setItem("minutos", minutos);
     localStorage.setItem("horasPost", horasPost);
     localStorage.setItem("minutosPost", minutosPost);
+    localStorage.setItem("tipoFilamento", tipoFilamento);
 
-    // Parámetros fijos
-    const COSTO_FILAMENTO_GR = 0.057; // soles por gramo
-    const COSTO_ELECTRICIDAD_MIN = 0.00081; // soles por minuto
-    const COSTO_AMORTIZACION_MIN = 0.0143; // soles por minuto (incluye mantenimiento)
-    const ADITIVOS_UND = 0.5; // soles por unidad
-    const COSTO_POST_MIN = 0.09; // soles por minuto de postprocesado
+    // Costos por tipo de filamento (soles/kg → dividido entre 1000 para soles/gr)
+    const COSTOS_FILAMENTO = {
+      PLA: 50 / 1000,
+      'PLA+': 55 / 1000,
+      PETG: 60 / 1000,
+      ABS: 70 / 1000,
+      TPU: 100 / 1000,
+    };
+
+    const COSTO_FILAMENTO_GR = COSTOS_FILAMENTO[tipoFilamento]; 
+    const COSTO_ELECTRICIDAD_MIN = 0.00081;
+    const COSTO_AMORTIZACION_MIN = 0.0143;
+    const ADITIVOS_UND = 0.5;
+    const COSTO_POST_MIN = 0.09;
 
     // Tiempo total en minutos
     const totalMin = (horas * 60) + minutos;
@@ -57,7 +67,7 @@ export default function Homepage() {
     const multi15 = total * 1.5;
 
     document.getElementById("resultado").innerText = `
-      Filamento: ${costoFilamento.toFixed(2)}
+      Filamento (${tipoFilamento}): ${costoFilamento.toFixed(2)}
       Electricidad: ${costoElectricidad.toFixed(2)}
       Amortización: ${costoAmortizacion.toFixed(2)}
       Aditivos: ${costoAditivos.toFixed(2)}
@@ -81,18 +91,12 @@ export default function Homepage() {
     document.getElementById("minutos").value = "";
     document.getElementById("horasPost").value = "";
     document.getElementById("minutosPost").value = "";
+    document.getElementById("tipoFilamento").value = "PLA";
     document.getElementById("resultado").innerText = "";
 
-    // Limpiar localStorage
-    localStorage.removeItem("filamento");
-    localStorage.removeItem("unidades");
-    localStorage.removeItem("horas");
-    localStorage.removeItem("minutos");
-    localStorage.removeItem("horasPost");
-    localStorage.removeItem("minutosPost");
+    localStorage.clear();
   };
 
-  // Al cargar la página, recuperar datos guardados
   useEffect(() => {
     const filamento = localStorage.getItem("filamento");
     const unidades = localStorage.getItem("unidades");
@@ -100,6 +104,7 @@ export default function Homepage() {
     const minutos = localStorage.getItem("minutos");
     const horasPost = localStorage.getItem("horasPost");
     const minutosPost = localStorage.getItem("minutosPost");
+    const tipoFilamento = localStorage.getItem("tipoFilamento");
 
     if (filamento) document.getElementById("filamento").value = filamento;
     if (unidades) document.getElementById("unidades").value = unidades;
@@ -107,6 +112,7 @@ export default function Homepage() {
     if (minutos) document.getElementById("minutos").value = minutos;
     if (horasPost) document.getElementById("horasPost").value = horasPost;
     if (minutosPost) document.getElementById("minutosPost").value = minutosPost;
+    if (tipoFilamento) document.getElementById("tipoFilamento").value = tipoFilamento;
   }, []);
 
   return (
@@ -118,6 +124,17 @@ export default function Homepage() {
         <div>
           <label>Gramos de filamento:</label>
           <input type="number" id="filamento" step="0.01" />
+        </div>
+
+        <div>
+          <label>Tipo de filamento:</label>
+          <select id="tipoFilamento">
+            <option value="PLA">PLA (50)</option>
+            <option value="PLA+">PLA+ (55)</option>
+            <option value="PETG">PETG (60)</option>
+            <option value="ABS">ABS (70)</option>
+            <option value="TPU">TPU (100)</option>
+          </select>
         </div>
 
         <div>
