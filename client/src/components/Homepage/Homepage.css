@@ -119,3 +119,10 @@
   color: #cccccc;
   text-align: center;
 }
+
+.resultado {
+  font-size: 1;   /* más grande que el normal */
+  line-height: 1.6;   /* más espacio entre líneas */
+  font-family: Consolas, monospace; /* mantiene estilo de bloque */
+  white-space: pre-wrap; /* para que se ajuste mejor en pantallas pequeñas */
+}

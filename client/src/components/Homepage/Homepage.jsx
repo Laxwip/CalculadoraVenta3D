@@ -1,134 +1,86 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Homepage.css';
+import { calcularCosto } from './costos';
 
 export default function Homepage() {
+  const [filamento, setFilamento] = useState("");
+  const [unidades, setUnidades] = useState(1);
+  const [tipoFilamento, setTipoFilamento] = useState("PLA");
+  const [horas, setHoras] = useState(0);
+  const [minutos, setMinutos] = useState(0);
+  const [horasPost, setHorasPost] = useState(0);
+  const [minutosPost, setMinutosPost] = useState(0);
+  const [incluirAditivos, setIncluirAditivos] = useState(true);
+  const [incluirPost, setIncluirPost] = useState(true);
+  const [resultado, setResultado] = useState("");
 
-  const calcularCosto = (e) => {
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("datosCosto"));
+    if (saved) {
+      setFilamento(saved.filamento);
+      setUnidades(saved.unidades);
+      setTipoFilamento(saved.tipoFilamento);
+      setHoras(saved.horas);
+      setMinutos(saved.minutos);
+      setHorasPost(saved.horasPost);
+      setMinutosPost(saved.minutosPost);
+      setIncluirAditivos(saved.incluirAditivos ?? true);
+      setIncluirPost(saved.incluirPost ?? true);
+    }
+  }, []);
+
+  const handleCalcular = (e) => {
     e.preventDefault();
+    const datos = { filamento: parseFloat(filamento) || 0, unidades, tipoFilamento, horas, minutos, horasPost, minutosPost, incluirAditivos, incluirPost };
+    localStorage.setItem("datosCosto", JSON.stringify(datos));
+    const res = calcularCosto(datos);
 
-    const filamento = parseFloat(document.getElementById("filamento").value) || 0; // gramos
-    const unidades = parseInt(document.getElementById("unidades").value) || 1;
-    const tipoFilamento = document.getElementById("tipoFilamento").value;
-
-    // Tiempo de impresión
-    const horas = document.getElementById("horas").value ? parseInt(document.getElementById("horas").value) : 0;
-    const minutos = document.getElementById("minutos").value ? parseInt(document.getElementById("minutos").value) : 0;
-
-    // Tiempo de postprocesado
-    const horasPost = document.getElementById("horasPost").value ? parseInt(document.getElementById("horasPost").value) : 0;
-    const minutosPost = document.getElementById("minutosPost").value ? parseInt(document.getElementById("minutosPost").value) : 0;
-
-    // Guardar datos en localStorage
-    localStorage.setItem("filamento", filamento);
-    localStorage.setItem("unidades", unidades);
-    localStorage.setItem("horas", horas);
-    localStorage.setItem("minutos", minutos);
-    localStorage.setItem("horasPost", horasPost);
-    localStorage.setItem("minutosPost", minutosPost);
-    localStorage.setItem("tipoFilamento", tipoFilamento);
-
-    // Costos por tipo de filamento (soles/kg → dividido entre 1000 para soles/gr)
-    const COSTOS_FILAMENTO = {
-      PLA: 50 / 1000,
-      'PLA+': 55 / 1000,
-      PETG: 60 / 1000,
-      ABS: 70 / 1000,
-      TPU: 100 / 1000,
-    };
-
-    const COSTO_FILAMENTO_GR = COSTOS_FILAMENTO[tipoFilamento]; 
-    const COSTO_ELECTRICIDAD_MIN = 0.00081;
-    const COSTO_AMORTIZACION_MIN = 0.0143;
-    const ADITIVOS_UND = 0.5;
-    const COSTO_POST_MIN = 0.09;
-
-    // Tiempo total en minutos
-    const totalMin = (horas * 60) + minutos;
-    const totalPostMin = (horasPost * 60) + minutosPost;
-
-    // Cálculos
-    const costoFilamento = unidades > 0 ? (filamento * COSTO_FILAMENTO_GR) / unidades : 0;
-    const costoElectricidad = unidades > 0 ? (totalMin * COSTO_ELECTRICIDAD_MIN) / unidades : 0;
-    const costoAmortizacion = unidades > 0 ? (totalMin * COSTO_AMORTIZACION_MIN) / unidades : 0;
-    const costoAditivos = ADITIVOS_UND;
-    const costoPost = unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
-
-    // Total base
-    const subtotal = costoFilamento + costoElectricidad + costoAmortizacion + costoAditivos + costoPost;
-
-    // Margen de corrección
-    const total = subtotal * 1.1111;
-
-    // Multiplicadores finales
-    const multi5 = total * 5;
-    const multi4 = total * 4;
-    const multi3 = total * 3;
-    const multi2 = total * 2;
-    const multi15 = total * 1.5;
-
-    document.getElementById("resultado").innerText = `
-      Filamento (${tipoFilamento}): ${costoFilamento.toFixed(2)}
-      Electricidad: ${costoElectricidad.toFixed(2)}
-      Amortización: ${costoAmortizacion.toFixed(2)}
-      Aditivos: ${costoAditivos.toFixed(2)}
-      Postprocesado: ${costoPost.toFixed(2)}
+    setResultado(`
+      Filamento (${tipoFilamento}): ${res.costoFilamento.toFixed(2)}
+      Electricidad: ${res.costoElectricidad.toFixed(2)}
+      Amortización: ${res.costoAmortizacion.toFixed(2)}
+      Aditivos: ${res.costoAditivos.toFixed(2)}
+      Postprocesado: ${res.costoPost.toFixed(2)}
       -------------------------
-      Subtotal: ${subtotal.toFixed(2)}
-      Total (x1.1111): ${total.toFixed(2)}
+      Subtotal: ${res.subtotal.toFixed(2)}
+      Total (x1.1111): ${res.total.toFixed(2)}
       -------------------------
-      x5: ${multi5.toFixed(2)}
-      x4: ${multi4.toFixed(2)}
-      x3: ${multi3.toFixed(2)}
-      x2: ${multi2.toFixed(2)}
-      x1.5: ${multi15.toFixed(2)}
-    `;
+      x1.25: ${res.multi125.toFixed(2)}
+      x1.5: ${res.multi15.toFixed(2)}
+      x1.75: ${res.multi175.toFixed(2)}
+      x2: ${res.multi2.toFixed(2)}
+      x2.5: ${res.multi25.toFixed(2)}
+      x3: ${res.multi3.toFixed(2)}
+    `);
   };
 
   const limpiarCampos = () => {
-    document.getElementById("filamento").value = "";
-    document.getElementById("unidades").value = "";
-    document.getElementById("horas").value = "";
-    document.getElementById("minutos").value = "";
-    document.getElementById("horasPost").value = "";
-    document.getElementById("minutosPost").value = "";
-    document.getElementById("tipoFilamento").value = "PLA";
-    document.getElementById("resultado").innerText = "";
-
+    setFilamento("");
+    setUnidades(1);
+    setTipoFilamento("PLA");
+    setHoras(0);
+    setMinutos(0);
+    setHorasPost(0);
+    setMinutosPost(0);
+    setIncluirAditivos(true);
+    setIncluirPost(true);
+    setResultado("");
     localStorage.clear();
   };
-
-  useEffect(() => {
-    const filamento = localStorage.getItem("filamento");
-    const unidades = localStorage.getItem("unidades");
-    const horas = localStorage.getItem("horas");
-    const minutos = localStorage.getItem("minutos");
-    const horasPost = localStorage.getItem("horasPost");
-    const minutosPost = localStorage.getItem("minutosPost");
-    const tipoFilamento = localStorage.getItem("tipoFilamento");
-
-    if (filamento) document.getElementById("filamento").value = filamento;
-    if (unidades) document.getElementById("unidades").value = unidades;
-    if (horas) document.getElementById("horas").value = horas;
-    if (minutos) document.getElementById("minutos").value = minutos;
-    if (horasPost) document.getElementById("horasPost").value = horasPost;
-    if (minutosPost) document.getElementById("minutosPost").value = minutosPost;
-    if (tipoFilamento) document.getElementById("tipoFilamento").value = tipoFilamento;
-  }, []);
 
   return (
     <div className="homepage">
       <h1>Costo Final</h1>
-      <form onSubmit={calcularCosto}>
-        
+      <form onSubmit={handleCalcular}>
         {/* Filamento */}
         <div>
           <label>Gramos de filamento:</label>
-          <input type="number" id="filamento" step="0.01" />
+          <input type="number" value={filamento} onChange={(e) => setFilamento(e.target.value)} step="0.01" />
         </div>
 
         <div>
           <label>Tipo de filamento:</label>
-          <select id="tipoFilamento">
+          <select value={tipoFilamento} onChange={(e) => setTipoFilamento(e.target.value)}>
             <option value="PLA">PLA (50)</option>
             <option value="PLA+">PLA+ (55)</option>
             <option value="PETG">PETG (60)</option>
@@ -139,33 +91,45 @@ export default function Homepage() {
 
         <div>
           <label>Cantidad de unidades:</label>
-          <input type="number" id="unidades" />
+          <input type="number" value={unidades} onChange={(e) => setUnidades(parseInt(e.target.value) || 1)} />
         </div>
 
-        {/* Tiempo de impresión */}
+        {/* Tiempo impresión */}
         <div>
           <label>Tiempo impresión </label>
-          <input type="number" id="horas" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={horas} onChange={(e) => setHoras(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
-          <input type="number" id="minutos" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={minutos} onChange={(e) => setMinutos(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
         </div>
 
-        {/* Tiempo de postprocesado */}
+        {/* Tiempo postprocesado */}
         <div>
           <label>Tiempo postprocesado </label>
-          <input type="number" id="horasPost" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={horasPost} onChange={(e) => setHorasPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
-          <input type="number" id="minutosPost" min="0" step="1" style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={minutosPost} onChange={(e) => setMinutosPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
+        </div>
+
+        {/* Opciones */}
+        <div>
+          <label>
+            <input type="checkbox" checked={incluirAditivos} onChange={(e) => setIncluirAditivos(e.target.checked)} />
+            Incluir aditivos
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" checked={incluirPost} onChange={(e) => setIncluirPost(e.target.checked)} />
+            Incluir postprocesado
+          </label>
         </div>
 
         <button type="submit">Calcular</button>
-        <button type="button" onClick={limpiarCampos} style={{ marginLeft: "10px" }}>
-          Limpiar
-        </button>
+        <button type="button" onClick={limpiarCampos} style={{ marginLeft: "10px" }}>Limpiar</button>
       </form>
 
       <h2>Resultados</h2>
-      <pre id="resultado"></pre>
+      <pre className="resultado">{resultado}</pre>
     </div>
   );
 }
