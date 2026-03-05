@@ -7,10 +7,10 @@ export const COSTOS_FILAMENTO = {
   TPU: 100 / 1000,
 };
 
-export const COSTO_ELECTRICIDAD_MIN = 0.00081;
+export const COSTO_ELECTRICIDAD_MIN = 0.000724;
 export const COSTO_AMORTIZACION_MIN = 0.0143;
 export const ADITIVOS_UND = 0.5;
-export const COSTO_POST_MIN = 0.09;
+export const COSTO_POST_MIN = 0.0785;
 
 export function calcularCosto({
   filamento,
@@ -43,11 +43,11 @@ export function calcularCosto({
     costoPost,
     subtotal,
     total,
-    multi125: total * 1.25,
-    multi15: total * 1.5,
-    multi175: total * 1.75,
-    multi2: total * 2,
-    multi25: total * 2.5,
     multi3: total * 3,
+    multi25: total * 2.5,
+    multi2: total * 2,
+    multi175: total * 1.75,
+    multi15: total * 1.5,
+    multi125: total * 1.25,
   };
 }

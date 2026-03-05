@@ -45,12 +45,12 @@ export default function Homepage() {
       Subtotal: ${res.subtotal.toFixed(2)}
       Total (x1.1111): ${res.total.toFixed(2)}
       -------------------------
-      x1.25: ${res.multi125.toFixed(2)}
-      x1.5: ${res.multi15.toFixed(2)}
-      x1.75: ${res.multi175.toFixed(2)}
-      x2: ${res.multi2.toFixed(2)}
-      x2.5: ${res.multi25.toFixed(2)}
       x3: ${res.multi3.toFixed(2)}
+      x2.5: ${res.multi25.toFixed(2)}
+      x2: ${res.multi2.toFixed(2)}
+      x1.75: ${res.multi175.toFixed(2)}
+      x1.5: ${res.multi15.toFixed(2)}
+      x1.25: ${res.multi125.toFixed(2)}
     `);
   };
 
