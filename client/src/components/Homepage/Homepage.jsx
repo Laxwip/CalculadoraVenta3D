@@ -10,7 +10,8 @@ export default function Homepage() {
   const [minutos, setMinutos] = useState(0);
   const [horasPost, setHorasPost] = useState(0);
   const [minutosPost, setMinutosPost] = useState(0);
-  const [incluirAditivos, setIncluirAditivos] = useState(true);
+  const [incluirArgolla, setIncluirArgolla] = useState(false);
+  const [incluirZiplock, setIncluirZiplock] = useState(false);
   const [incluirPost, setIncluirPost] = useState(true);
   const [resultado, setResultado] = useState("");
 
@@ -24,33 +25,49 @@ export default function Homepage() {
       setMinutos(saved.minutos);
       setHorasPost(saved.horasPost);
       setMinutosPost(saved.minutosPost);
-      setIncluirAditivos(saved.incluirAditivos ?? true);
+      setIncluirArgolla(saved.incluirArgolla ?? false);
+      setIncluirZiplock(saved.incluirZiplock ?? false);
       setIncluirPost(saved.incluirPost ?? true);
     }
   }, []);
 
   const handleCalcular = (e) => {
     e.preventDefault();
-    const datos = { filamento: parseFloat(filamento) || 0, unidades, tipoFilamento, horas, minutos, horasPost, minutosPost, incluirAditivos, incluirPost };
+    const datos = {
+      filamento: parseFloat(filamento) || 0,
+      unidades,
+      tipoFilamento,
+      horas,
+      minutos,
+      horasPost,
+      minutosPost,
+      incluirArgolla,
+      incluirZiplock,
+      incluirPost
+    };
     localStorage.setItem("datosCosto", JSON.stringify(datos));
     const res = calcularCosto(datos);
 
+    // Construir texto de aditivos seleccionados
+    let aditivosTexto = "Ninguno";
+    if (incluirArgolla && incluirZiplock) aditivosTexto = "Argolla + Ziplock";
+    else if (incluirArgolla) aditivosTexto = "Argolla";
+    else if (incluirZiplock) aditivosTexto = "Ziplock";
+
     setResultado(`
       Filamento (${tipoFilamento}): ${res.costoFilamento.toFixed(2)}
-      Electricidad: ${res.costoElectricidad.toFixed(2)}
-      Amortización: ${res.costoAmortizacion.toFixed(2)}
-      Aditivos: ${res.costoAditivos.toFixed(2)}
-      Postprocesado: ${res.costoPost.toFixed(2)}
+      Electricidad:    ${res.costoElectricidad.toFixed(2)}
+      Amortización:    ${res.costoAmortizacion.toFixed(2)}
+      Aditivos (${aditivosTexto}): ${res.costoAditivos.toFixed(2)}
+      Postprocesado:   ${res.costoPost.toFixed(2)}
       -------------------------
-      Subtotal: ${res.subtotal.toFixed(2)}
+      Costo Und:       ${res.subtotal.toFixed(2)}
       Total (x1.1111): ${res.total.toFixed(2)}
       -------------------------
-      x3: ${res.multi3.toFixed(2)}
-      x2.5: ${res.multi25.toFixed(2)}
-      x2: ${res.multi2.toFixed(2)}
-      x1.75: ${res.multi175.toFixed(2)}
-      x1.5: ${res.multi15.toFixed(2)}
-      x1.25: ${res.multi125.toFixed(2)}
+      Venta UND (x2):       ${res.multi2.toFixed(2)}
+      Venta 6UND (x1.75):   ${res.multi175.toFixed(2)}
+      Venta 12UND (x1.5):   ${res.multi15.toFixed(2)}
+      Venta +24UND (x1.25): ${res.multi125.toFixed(2)}
     `);
   };
 
@@ -62,7 +79,8 @@ export default function Homepage() {
     setMinutos(0);
     setHorasPost(0);
     setMinutosPost(0);
-    setIncluirAditivos(true);
+    setIncluirArgolla(false);
+    setIncluirZiplock(false);
     setIncluirPost(true);
     setResultado("");
     localStorage.clear();
@@ -113,8 +131,14 @@ export default function Homepage() {
         {/* Opciones */}
         <div>
           <label>
-            <input type="checkbox" checked={incluirAditivos} onChange={(e) => setIncluirAditivos(e.target.checked)} />
-            Incluir aditivos
+            <input type="checkbox" checked={incluirArgolla} onChange={(e) => setIncluirArgolla(e.target.checked)} />
+            Incluir Argolla (0.17)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" checked={incluirZiplock} onChange={(e) => setIncluirZiplock(e.target.checked)} />
+            Incluir Ziplock (0.23)
           </label>
         </div>
         <div>

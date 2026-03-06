@@ -9,7 +9,12 @@ export const COSTOS_FILAMENTO = {
 
 export const COSTO_ELECTRICIDAD_MIN = 0.000724;
 export const COSTO_AMORTIZACION_MIN = 0.0143;
-export const ADITIVOS_UND = 0.5;
+
+export const COSTOS_ADITIVOS = {
+  Argolla: 0.17,
+  Ziplock: 0.23,
+};
+
 export const COSTO_POST_MIN = 0.0785;
 
 export function calcularCosto({
@@ -20,7 +25,8 @@ export function calcularCosto({
   minutos,
   horasPost,
   minutosPost,
-  incluirAditivos,
+  incluirArgolla,
+  incluirZiplock,
   incluirPost,
 }) {
   const totalMin = (horas * 60) + minutos;
@@ -29,7 +35,12 @@ export function calcularCosto({
   const costoFilamento = unidades > 0 ? (filamento * COSTOS_FILAMENTO[tipoFilamento]) / unidades : 0;
   const costoElectricidad = unidades > 0 ? (totalMin * COSTO_ELECTRICIDAD_MIN) / unidades : 0;
   const costoAmortizacion = unidades > 0 ? (totalMin * COSTO_AMORTIZACION_MIN) / unidades : 0;
-  const costoAditivos = incluirAditivos ? ADITIVOS_UND : 0;
+
+  // Nuevo cálculo de aditivos
+  let costoAditivos = 0;
+  if (incluirArgolla) costoAditivos += COSTOS_ADITIVOS.Argolla;
+  if (incluirZiplock) costoAditivos += COSTOS_ADITIVOS.Ziplock;
+
   const costoPost = incluirPost && unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
 
   const subtotal = costoFilamento + costoElectricidad + costoAmortizacion + costoAditivos + costoPost;
