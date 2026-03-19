@@ -94,10 +94,7 @@ export default function Homepage() {
         <div className='OrientacionHorizontal'>
           <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773942238/Zdimension/peso_wm2ncm.png" alt="" className='icon'/>
           <input type="number" value={filamento} onChange={(e) => setFilamento(e.target.value)} step="0.01" />
-        </div>
-
-        <div>
-          <label>Tipo de filamento:</label>
+          <div>
           <select value={tipoFilamento} onChange={(e) => setTipoFilamento(e.target.value)}>
             <option value="PLA">PLA (50)</option>
             <option value="PLA+">PLA+ (55)</option>
@@ -106,23 +103,28 @@ export default function Homepage() {
             <option value="TPU">TPU (100)</option>
           </select>
         </div>
+        </div>
 
-        <div>
-          <label>Cantidad de unidades:</label>
+        
+
+        <div className='OrientacionHorizontal'>
+          <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773943161/Zdimension/paquete_hvpvkj.png" alt="" className='icon' />
           <input type="number" value={unidades} onChange={(e) => setUnidades(parseInt(e.target.value) || 1)} />
         </div>
 
         {/* Tiempo impresión */}
-        <div>
-          <label>Tiempo impresión </label>
+        <div className='OrientacionHorizontal'>
+          <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773944855/Zdimension/tiempo-restante_bj8s1s.png" alt="" className='icon'/>
+          <label>Impresión______</label>
           <input type="number" value={horas} onChange={(e) => setHoras(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
           <input type="number" value={minutos} onChange={(e) => setMinutos(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
         </div>
 
         {/* Tiempo postprocesado */}
-        <div>
-          <label>Tiempo postprocesado </label>
+        <div className='OrientacionHorizontal'>
+          <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773944855/Zdimension/tiempo-restante_bj8s1s.png" alt="" className='icon'/>
+          <label>Postprocesado </label>
           <input type="number" value={horasPost} onChange={(e) => setHorasPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
           <input type="number" value={minutosPost} onChange={(e) => setMinutosPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />

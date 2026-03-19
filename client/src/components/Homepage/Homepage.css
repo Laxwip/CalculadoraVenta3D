@@ -137,10 +137,16 @@ input[type=number]::-webkit-outer-spin-button {
 .icon{
   height: 1.5rem;
   filter: invert();
-  padding-right: 1rem;
+  
 }
 
 .OrientacionHorizontal{
   display: flex;
   flex-direction: row;
+  gap: 1rem;
+
+  && select{
+    height: 100%;
+    border-radius: 0.5rem;
+  }
 }
