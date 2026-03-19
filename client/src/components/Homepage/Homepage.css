@@ -44,6 +44,13 @@
   color: #e0e0e0;
 }
 
+/* Para Chrome, Safari, Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Inputs */
 .homepage input[type="number"],
 .homepage input[type="text"] {
@@ -125,4 +132,15 @@
   line-height: 1.6;   /* más espacio entre líneas */
   font-family: Consolas, monospace; /* mantiene estilo de bloque */
   white-space: pre-wrap; /* para que se ajuste mejor en pantallas pequeñas */
+}
+
+.icon{
+  height: 1.5rem;
+  filter: invert();
+  padding-right: 1rem;
+}
+
+.OrientacionHorizontal{
+  display: flex;
+  flex-direction: row;
 }

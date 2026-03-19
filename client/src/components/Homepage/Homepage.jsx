@@ -91,8 +91,8 @@ export default function Homepage() {
       <h1>Costo Final</h1>
       <form onSubmit={handleCalcular}>
         {/* Filamento */}
-        <div>
-          <label>Gramos de filamento:</label>
+        <div className='OrientacionHorizontal'>
+          <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773942238/Zdimension/peso_wm2ncm.png" alt="" className='icon'/>
           <input type="number" value={filamento} onChange={(e) => setFilamento(e.target.value)} step="0.01" />
         </div>
 
