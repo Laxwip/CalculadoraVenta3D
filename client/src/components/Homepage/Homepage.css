@@ -140,13 +140,16 @@ input[type=number]::-webkit-outer-spin-button {
   
 }
 
-.OrientacionHorizontal{
+.OrientacionHorizontal {
+  width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  justify-content: space-evenly; /* distribuye en espacios iguales */
+  max-width: 800px; /* ejemplo de límite máximo */
+  gap: .5rem;
+}
 
-  && select{
-    height: 100%;
-    border-radius: 0.5rem;
-  }
+.OrientacionHorizontal select {
+  height: 100%;
+  border-radius: 0.5rem;
 }
