@@ -105,7 +105,7 @@ input[type=number]::-webkit-outer-spin-button {
   background: #1e1e1e;              /* mismo fondo que el formulario */
   padding: 1rem 1.2rem;             /* un poco más de aire */
   border-radius: 8px;               /* esquinas redondeadas */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6), 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6),
               inset 0 0 6px rgba(255,255,255,0.05); /* sombra externa + interna */
   margin-top: 1.5rem;               /* separación más clara respecto al formulario */
   width: 100%;
@@ -128,28 +128,89 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .resultado {
-  font-size: 1;   /* más grande que el normal */
-  line-height: 1.6;   /* más espacio entre líneas */
-  font-family: Consolas, monospace; /* mantiene estilo de bloque */
-  white-space: pre-wrap; /* para que se ajuste mejor en pantallas pequeñas */
+  font-size: 1rem;
+  line-height: 1.6;
+  font-family: Consolas, monospace;
+  white-space: pre-wrap;
 }
 
-.icon{
+/* Iconos */
+.icon {
   height: 1.5rem;
   filter: invert();
-  
 }
 
+/* Orientación horizontal */
 .OrientacionHorizontal {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly; /* distribuye en espacios iguales */
-  max-width: 800px; /* ejemplo de límite máximo */
+  justify-content: space-evenly;
+  max-width: 800px;
   gap: .5rem;
 }
 
 .OrientacionHorizontal select {
   height: 100%;
   border-radius: 0.5rem;
+}
+
+/* Selector de aditivos */
+select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #2a2a2a;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #0078d7;
+  box-shadow: 0 0 0 2px rgba(0,120,215,0.4);
+  background: #333;
+}
+
+/* Caja de chips */
+.chips-box {
+  min-height: 60px; /* espacio fijo */
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #1e1e1e;
+}
+
+.placeholder {
+  color: #888;
+  font-size: 0.9em;
+}
+
+/* Chips individuales */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 0.9em;
+  color: #f5f5f5;
+}
+
+.chip button {
+  margin-left: 6px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.chip button:hover {
+  color: #ff4d4d;
 }

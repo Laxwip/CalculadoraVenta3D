@@ -13,6 +13,7 @@ export const COSTO_AMORTIZACION_MIN = 0.0143;
 export const COSTOS_ADITIVOS = {
   Argolla: 0.17,
   Ziplock: 0.23,
+  Sticker: 0.10, // añadido
 };
 
 export const COSTO_POST_MIN = 0.0785;
@@ -25,9 +26,7 @@ export function calcularCosto({
   minutos,
   horasPost,
   minutosPost,
-  incluirArgolla,
-  incluirZiplock,
-  incluirPost,
+  aditivos // ahora recibimos array
 }) {
   const totalMin = (horas * 60) + minutos;
   const totalPostMin = (horasPost * 60) + minutosPost;
@@ -36,12 +35,18 @@ export function calcularCosto({
   const costoElectricidad = unidades > 0 ? (totalMin * COSTO_ELECTRICIDAD_MIN) / unidades : 0;
   const costoAmortizacion = unidades > 0 ? (totalMin * COSTO_AMORTIZACION_MIN) / unidades : 0;
 
-  // Nuevo cálculo de aditivos
+  // Cálculo de aditivos con array
   let costoAditivos = 0;
-  if (incluirArgolla) costoAditivos += COSTOS_ADITIVOS.Argolla;
-  if (incluirZiplock) costoAditivos += COSTOS_ADITIVOS.Ziplock;
+  if (Array.isArray(aditivos)) {
+    aditivos.forEach(a => {
+      if (COSTOS_ADITIVOS[a]) {
+        costoAditivos += COSTOS_ADITIVOS[a];
+      }
+    });
+  }
 
-  const costoPost = incluirPost && unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
+  // Postprocesado siempre se incluye (aunque sea 0)
+  const costoPost = unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
 
   const subtotal = costoFilamento + costoElectricidad + costoAmortizacion + costoAditivos + costoPost;
   const total = subtotal * 1.1111;

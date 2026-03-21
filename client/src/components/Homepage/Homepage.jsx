@@ -10,9 +10,7 @@ export default function Homepage() {
   const [minutos, setMinutos] = useState(0);
   const [horasPost, setHorasPost] = useState(0);
   const [minutosPost, setMinutosPost] = useState(0);
-  const [incluirArgolla, setIncluirArgolla] = useState(false);
-  const [incluirZiplock, setIncluirZiplock] = useState(false);
-  const [incluirPost, setIncluirPost] = useState(true);
+  const [aditivos, setAditivos] = useState([]); 
   const [resultado, setResultado] = useState("");
 
   useEffect(() => {
@@ -25,9 +23,7 @@ export default function Homepage() {
       setMinutos(saved.minutos);
       setHorasPost(saved.horasPost);
       setMinutosPost(saved.minutosPost);
-      setIncluirArgolla(saved.incluirArgolla ?? false);
-      setIncluirZiplock(saved.incluirZiplock ?? false);
-      setIncluirPost(saved.incluirPost ?? true);
+      setAditivos(saved.aditivos ?? []);
     }
   }, []);
 
@@ -41,18 +37,12 @@ export default function Homepage() {
       minutos,
       horasPost,
       minutosPost,
-      incluirArgolla,
-      incluirZiplock,
-      incluirPost
+      aditivos
     };
     localStorage.setItem("datosCosto", JSON.stringify(datos));
     const res = calcularCosto(datos);
 
-    // Construir texto de aditivos seleccionados
-    let aditivosTexto = "Ninguno";
-    if (incluirArgolla && incluirZiplock) aditivosTexto = "Argolla + Ziplock";
-    else if (incluirArgolla) aditivosTexto = "Argolla";
-    else if (incluirZiplock) aditivosTexto = "Ziplock";
+    const aditivosTexto = aditivos.length > 0 ? aditivos.join(" + ") : "Ninguno";
 
     setResultado(`
       Filamento (${tipoFilamento}): ${res.costoFilamento.toFixed(2)}
@@ -79,11 +69,21 @@ export default function Homepage() {
     setMinutos(0);
     setHorasPost(0);
     setMinutosPost(0);
-    setIncluirArgolla(false);
-    setIncluirZiplock(false);
-    setIncluirPost(true);
+    setAditivos([]);
     setResultado("");
     localStorage.clear();
+  };
+
+  const handleAddAditivo = (e) => {
+    const val = e.target.value;
+    if (val && !aditivos.includes(val)) {
+      setAditivos([...aditivos, val]);
+    }
+    e.target.value = ""; 
+  };
+
+  const removeAditivo = (item) => {
+    setAditivos(aditivos.filter(a => a !== item));
   };
 
   return (
@@ -95,59 +95,58 @@ export default function Homepage() {
           <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773942238/Zdimension/peso_wm2ncm.png" alt="" className='icon'/>
           <input type="number" value={filamento} onChange={(e) => setFilamento(e.target.value)} step="0.01" />
           <div>
-          <select value={tipoFilamento} onChange={(e) => setTipoFilamento(e.target.value)}>
-            <option value="PLA">PLA (50)</option>
-            <option value="PLA+">PLA+ (55)</option>
-            <option value="PETG">PETG (60)</option>
-            <option value="ABS">ABS (70)</option>
-            <option value="TPU">TPU (100)</option>
-          </select>
+            <select value={tipoFilamento} onChange={(e) => setTipoFilamento(e.target.value)}>
+              <option value="PLA">PLA (50)</option>
+              <option value="PLA+">PLA+ (55)</option>
+              <option value="PETG">PETG (60)</option>
+              <option value="ABS">ABS (70)</option>
+              <option value="TPU">TPU (100)</option>
+            </select>
+          </div>
         </div>
-        </div>
-
-        
 
         <div className='OrientacionHorizontal'>
           <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773943161/Zdimension/paquete_hvpvkj.png" alt="" className='icon' />
-          <input type="number" value={unidades} onChange={(e) => setUnidades(parseInt(e.target.value) || 1)} />
+          <input type="number" value={unidades} onChange={(e) => setUnidades(e.target.value === "" ? "" : parseInt(e.target.value))} />
         </div>
 
         {/* Tiempo impresión */}
         <div className='OrientacionHorizontal'>
           <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773944855/Zdimension/tiempo-restante_bj8s1s.png" alt="" className='icon'/>
           <label>Impresión______</label>
-          <input type="number" value={horas} onChange={(e) => setHoras(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={horas} onChange={(e) => setHoras(e.target.value === "" ? "" : parseInt(e.target.value))} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
-          <input type="number" value={minutos} onChange={(e) => setMinutos(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={minutos} onChange={(e) => setMinutos(e.target.value === "" ? "" : parseInt(e.target.value))} style={{ width: "3em", textAlign: "center" }} />
         </div>
 
         {/* Tiempo postprocesado */}
         <div className='OrientacionHorizontal'>
           <img src="https://res.cloudinary.com/dpk2wmbsb/image/upload/v1773944855/Zdimension/tiempo-restante_bj8s1s.png" alt="" className='icon'/>
           <label>Postprocesado </label>
-          <input type="number" value={horasPost} onChange={(e) => setHorasPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={horasPost} onChange={(e) => setHorasPost(e.target.value === "" ? "" : parseInt(e.target.value))} style={{ width: "3em", textAlign: "center" }} />
           <label>:</label>
-          <input type="number" value={minutosPost} onChange={(e) => setMinutosPost(parseInt(e.target.value) || 0)} style={{ width: "3em", textAlign: "center" }} />
+          <input type="number" value={minutosPost} onChange={(e) => setMinutosPost(e.target.value === "" ? "" : parseInt(e.target.value))} style={{ width: "3em", textAlign: "center" }} />
         </div>
 
-        {/* Opciones */}
+        {/* Selector desplegable de aditivos */}
         <div>
-          <label>
-            <input type="checkbox" checked={incluirArgolla} onChange={(e) => setIncluirArgolla(e.target.checked)} />
-            Incluir Argolla (0.17)
-          </label>
+          <label>Aditivos:</label>
+          <select onChange={handleAddAditivo} defaultValue="">
+            <option value="" disabled>Selecciona un aditivo</option>
+            <option value="Argolla">Argolla (0.17)</option>
+            <option value="Ziplock">Ziplock (0.23)</option>
+            <option value="Sticker">Sticker (0.10)</option>
+          </select>
         </div>
-        <div>
-          <label>
-            <input type="checkbox" checked={incluirZiplock} onChange={(e) => setIncluirZiplock(e.target.checked)} />
-            Incluir Ziplock (0.23)
-          </label>
-        </div>
-        <div>
-          <label>
-            <input type="checkbox" checked={incluirPost} onChange={(e) => setIncluirPost(e.target.checked)} />
-            Incluir postprocesado
-          </label>
+
+        {/* Caja fija para chips de aditivos */}
+        <div className="chips-box">
+          {aditivos.length === 0 && <span className="placeholder">No hay aditivos seleccionados</span>}
+          {aditivos.map((item) => (
+            <span key={item} className="chip">
+              {item} <button type="button" onClick={() => removeAditivo(item)}>x</button>
+            </span>
+          ))}
         </div>
 
         <button type="submit">Calcular</button>
