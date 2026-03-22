@@ -13,6 +13,7 @@ export const COSTO_AMORTIZACION_MIN = 0.0143;
 export const COSTOS_ADITIVOS = {
   Argolla: 0.17,
   Ziplock: 0.23,
+  Switch: 0.23,
   Sticker: 0.10, // añadido
 };
 

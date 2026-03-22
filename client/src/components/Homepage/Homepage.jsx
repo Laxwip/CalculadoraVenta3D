@@ -136,6 +136,7 @@ export default function Homepage() {
             <option value="Argolla">Argolla (0.17)</option>
             <option value="Ziplock">Ziplock (0.23)</option>
             <option value="Sticker">Sticker (0.10)</option>
+            <option value="Switch">Switch (0.23)</option>
           </select>
         </div>
 
