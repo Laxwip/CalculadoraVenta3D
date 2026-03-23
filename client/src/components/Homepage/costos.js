@@ -60,11 +60,9 @@ export function calcularCosto({
     costoPost,
     subtotal,
     total,
-    multi3: total * 3,
-    multi25: total * 2.5,
     multi2: total * 2,
-    multi175: total * 1.75,
-    multi15: total * 1.5,
-    multi125: total * 1.25,
+    multi185: total * 1.85,
+    multi17: total * 1.7,
+    multi155: total * 1.55,
   };
 }

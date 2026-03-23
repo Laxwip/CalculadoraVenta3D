@@ -55,9 +55,9 @@ export default function Homepage() {
       Total (x1.1111): ${res.total.toFixed(2)}
       -------------------------
       Venta UND (x2):       ${res.multi2.toFixed(2)}
-      Venta 6UND (x1.75):   ${res.multi175.toFixed(2)}
-      Venta 12UND (x1.5):   ${res.multi15.toFixed(2)}
-      Venta +24UND (x1.25): ${res.multi125.toFixed(2)}
+      Venta 6UND (x1.85):   ${res.multi185.toFixed(2)}
+      Venta 12UND (x1.7):   ${res.multi17.toFixed(2)}
+      Venta +24UND (x1.55): ${res.multi155.toFixed(2)}
     `);
   };
 
