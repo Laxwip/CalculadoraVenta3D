@@ -1,4 +1,3 @@
-// costos.js
 export const COSTOS_FILAMENTO = {
   PLA: 50 / 1000,
   'PLA+': 55 / 1000,
@@ -14,10 +13,11 @@ export const COSTOS_ADITIVOS = {
   Argolla: 0.17,
   Ziplock: 0.23,
   Switch: 0.23,
-  Sticker: 0.10, // añadido
+  Sticker: 0.10,
 };
 
 export const COSTO_POST_MIN = 0.0785;
+export const COSTO_ENVIO = 1.25;
 
 export function calcularCosto({
   filamento,
@@ -27,7 +27,7 @@ export function calcularCosto({
   minutos,
   horasPost,
   minutosPost,
-  aditivos // ahora recibimos array
+  aditivos
 }) {
   const totalMin = (horas * 60) + minutos;
   const totalPostMin = (horasPost * 60) + minutosPost;
@@ -36,7 +36,6 @@ export function calcularCosto({
   const costoElectricidad = unidades > 0 ? (totalMin * COSTO_ELECTRICIDAD_MIN) / unidades : 0;
   const costoAmortizacion = unidades > 0 ? (totalMin * COSTO_AMORTIZACION_MIN) / unidades : 0;
 
-  // Cálculo de aditivos con array
   let costoAditivos = 0;
   if (Array.isArray(aditivos)) {
     aditivos.forEach(a => {
@@ -46,11 +45,22 @@ export function calcularCosto({
     });
   }
 
-  // Postprocesado siempre se incluye (aunque sea 0)
   const costoPost = unidades > 0 ? (totalPostMin * COSTO_POST_MIN) / unidades : 0;
 
-  const subtotal = costoFilamento + costoElectricidad + costoAmortizacion + costoAditivos + costoPost;
-  const total = subtotal * 1.1111;
+  // Base: filamento + electricidad + amortización
+  const base = costoFilamento + costoElectricidad + costoAmortizacion;
+
+  // Multiplicador aplicado solo a la base
+  const baseMultiplicada = base * 1.1111;
+
+  // Total sin envío (base multiplicada + aditivos + postprocesado)
+  const totalSinEnvio = baseMultiplicada + costoAditivos + costoPost;
+
+  // Precios de venta + envío
+  const multi2 = (totalSinEnvio * 2) + COSTO_ENVIO;
+  const multi185 = (totalSinEnvio * 1.85) + COSTO_ENVIO;
+  const multi17 = (totalSinEnvio * 1.7) + COSTO_ENVIO;
+  const multi155 = (totalSinEnvio * 1.55) + COSTO_ENVIO;
 
   return {
     costoFilamento,
@@ -58,11 +68,14 @@ export function calcularCosto({
     costoAmortizacion,
     costoAditivos,
     costoPost,
-    subtotal,
-    total,
-    multi2: total * 2,
-    multi185: total * 1.85,
-    multi17: total * 1.7,
-    multi155: total * 1.55,
+    subtotal: base,
+    baseMultiplicada,
+    totalSinEnvio,
+    costoEnvio: COSTO_ENVIO,
+    totalFinal: totalSinEnvio + COSTO_ENVIO, // total normal con envío
+    multi2,
+    multi185,
+    multi17,
+    multi155,
   };
 }

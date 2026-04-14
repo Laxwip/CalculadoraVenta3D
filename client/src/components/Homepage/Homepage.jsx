@@ -45,20 +45,27 @@ export default function Homepage() {
     const aditivosTexto = aditivos.length > 0 ? aditivos.join(" + ") : "Ninguno";
 
     setResultado(`
-      Filamento (${tipoFilamento}): ${res.costoFilamento.toFixed(2)}
-      Electricidad:    ${res.costoElectricidad.toFixed(2)}
-      Amortización:    ${res.costoAmortizacion.toFixed(2)}
-      Aditivos (${aditivosTexto}): ${res.costoAditivos.toFixed(2)}
-      Postprocesado:   ${res.costoPost.toFixed(2)}
+      Filamento (${tipoFilamento}):            ${res.costoFilamento.toFixed(2)}
+      Electricidad:               ${res.costoElectricidad.toFixed(2)}
+      Amortización:               ${res.costoAmortizacion.toFixed(2)}
       -------------------------
-      Costo Und:       ${res.subtotal.toFixed(2)}
-      Total (x1.1111): ${res.total.toFixed(2)}
+      Subtotal Base:              ${res.subtotal.toFixed(2)}
+      Margen de error (*1.1111) : ${res.baseMultiplicada.toFixed(2)}
+      Aditivos:                   ${res.costoAditivos.toFixed(2)}
+      Postprocesado:              ${res.costoPost.toFixed(2)}
       -------------------------
-      Venta UND (x2):       ${res.multi2.toFixed(2)}
-      Venta 6UND (x1.85):   ${res.multi185.toFixed(2)}
-      Venta 12UND (x1.7):   ${res.multi17.toFixed(2)}
-      Venta +24UND (x1.55): ${res.multi155.toFixed(2)}
+      Total sin envío:            ${res.totalSinEnvio.toFixed(2)}
+      Costo Envío:                ${res.costoEnvio.toFixed(2)}
+      -------------------------
+      Total Final:                ${res.totalFinal.toFixed(2)}
+      -------------------------
+      Venta UND (x2):             ${res.multi2.toFixed(2)}
+      Venta 6UND (x1.85):         ${res.multi185.toFixed(2)}
+      Venta 12UND (x1.7):         ${res.multi17.toFixed(2)}
+      Venta +24UND (x1.55):       ${res.multi155.toFixed(2)}
     `);
+
+
   };
 
   const limpiarCampos = () => {
