@@ -43,27 +43,94 @@ export default function Homepage() {
     const res = calcularCosto(datos);
 
     const aditivosTexto = aditivos.length > 0 ? aditivos.join(" + ") : "Ninguno";
+    
+    function redondearPersonalizado(valor) {
+      return Math.round(valor * 2) / 2; // múltiplo de 0.5 más cercano
+    }
 
-    setResultado(`
-      Filamento (${tipoFilamento}):            ${res.costoFilamento.toFixed(2)}
-      Electricidad:               ${res.costoElectricidad.toFixed(2)}
-      Amortización:               ${res.costoAmortizacion.toFixed(2)}
-      -------------------------
-      Subtotal Base:              ${res.subtotal.toFixed(2)}
-      Margen de error (*1.1111) : ${res.baseMultiplicada.toFixed(2)}
-      Aditivos:                   ${res.costoAditivos.toFixed(2)}
-      Postprocesado:              ${res.costoPost.toFixed(2)}
-      -------------------------
-      Total sin envío:            ${res.totalSinEnvio.toFixed(2)}
-      Costo Envío:                ${res.costoEnvio.toFixed(2)}
-      -------------------------
-      Total Final:                ${res.totalFinal.toFixed(2)}
-      -------------------------
-      Venta UND (x2):             ${res.multi2.toFixed(2)}
-      Venta 6UND (x1.85):         ${res.multi185.toFixed(2)}
-      Venta 12UND (x1.7):         ${res.multi17.toFixed(2)}
-      Venta +24UND (x1.55):       ${res.multi155.toFixed(2)}
-    `);
+    const ventaBaseOriginal = res.multi2; // valor calculado normal
+    const ventaBaseRedondeado = redondearPersonalizado(ventaBaseOriginal);
+
+    // Fórmula: ((valorRedondeado - envio) / 2) * factor + envio
+    const envio = 1.25;
+    const venta6  = ((ventaBaseRedondeado - envio) / 2) * 1.85 + envio;
+    const venta12 = ((ventaBaseRedondeado - envio) / 2) * 1.7  + envio;
+    const venta24 = ((ventaBaseRedondeado - envio) / 2) * 1.55 + envio;
+
+
+    setResultado(
+      <>
+        <div className="linea color1">
+          <span className="label">Filamento ({tipoFilamento}):</span>
+          <span className="valor">{res.costoFilamento.toFixed(2)}</span>
+        </div>
+        <div className="linea color1">
+          <span className="label">Electricidad:</span>
+          <span className="valor">{res.costoElectricidad.toFixed(2)}</span>
+        </div>
+        <div className="linea color1">
+          <span className="label">Amortización:</span>
+          <span className="valor">{res.costoAmortizacion.toFixed(2)}</span>
+        </div>
+        <hr />
+        <div className="linea color1">
+          <span className="label">Subtotal Base:</span>
+          <span className="valor">{res.subtotal.toFixed(2)}</span>
+        </div>
+        <div className="linea color2">
+          <span className="label">Margen de error (*1.1111):</span>
+          <span className="valor">{res.baseMultiplicada.toFixed(2)}</span>
+        </div>
+        <div className="linea color2">
+          <span className="label">Aditivos:</span>
+          <span className="valor">{res.costoAditivos.toFixed(2)}</span>
+        </div>
+        <div className="linea color2">
+          <span className="label">Postprocesado:</span>
+          <span className="valor">{res.costoPost.toFixed(2)}</span>
+        </div>
+        <hr />
+        <div className="linea color2 bold">
+          <span className="label">Gasto total:</span>
+          <span className="valor">{res.totalSinEnvio.toFixed(2)}</span>
+        </div>
+        <div className="linea">
+          <span className="label">Costo Envío:</span>
+          <span className="valor">{res.costoEnvio.toFixed(2)}</span>
+        </div>
+        <div className="linea">
+          <span className="label totalFinal">Total Final:</span>
+          <span className="valor totalFinal">{res.totalFinal.toFixed(2)}</span>
+        </div>
+        <hr />
+        <div className="linea">
+          <span className="label">Venta UND (x2):</span>
+          <span className="valor">{res.multi2.toFixed(2)}</span>
+          <span className="valorNuevo">{ventaBaseRedondeado}</span>
+        </div>
+
+        <div className="linea">
+          <span className="label">Venta 6UND (x1.85):</span>
+          <span className="valor">{res.multi185.toFixed(2)}</span>
+          <span className="valorNuevo">{venta6.toFixed(2)}</span>
+        </div>
+
+        <div className="linea">
+          <span className="label">Venta 12UND (x1.7):</span>
+          <span className="valor">{res.multi17.toFixed(2)}</span>
+          <span className="valorNuevo">{venta12.toFixed(2)}</span>
+        </div>
+
+        <div className="linea">
+          <span className="label">Venta +24UND (x1.55):</span>
+          <span className="valor">{res.multi155.toFixed(2)}</span>
+          <span className="valorNuevo">{venta24.toFixed(2)}</span>
+        </div>
+
+      </>
+    );
+
+
 
 
   };

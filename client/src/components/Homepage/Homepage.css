@@ -214,3 +214,31 @@ select:focus {
 .chip button:hover {
   color: #ff4d4d;
 }
+
+.linea {
+  display: flex;
+  justify-content: space-between;
+  width: 350px;
+}
+
+.color1{
+  color: rgb(72, 223, 105);
+}
+
+.color2{
+  color: rgb(79, 192, 245);
+}
+
+.bold{
+  font-weight: 900;
+}
+
+/* .valor {
+  color: #ffffff;
+} */
+
+.valorNuevo {
+  color: rgb(252, 242, 102);
+  font-weight: bold;
+  margin-left: 10px;
+}
