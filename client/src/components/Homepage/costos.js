@@ -1,9 +1,9 @@
 export const COSTOS_FILAMENTO = {
-  PLA: 50 / 1000,
-  'PLA+': 55 / 1000,
-  PETG: 60 / 1000,
-  ABS: 70 / 1000,
-  TPU: 100 / 1000,
+  PLA: (50 + 7)  / 1000,
+  'PLA+': (55 + 7)  / 1000,
+  PETG: (60 + 7)  / 1000,
+  ABS: (70 + 7)  / 1000,
+  TPU: (100 + 7)  / 1000,
 };
 
 export const COSTO_ELECTRICIDAD_MIN = 0.000724;
