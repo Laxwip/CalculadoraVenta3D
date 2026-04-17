@@ -6,7 +6,7 @@ export const COSTOS_FILAMENTO = {
   TPU: (100 + 7)  / 1000,
 };
 
-export const COSTO_ELECTRICIDAD_MIN = 0.000724;
+export const COSTO_ELECTRICIDAD_MIN = 0.0016;
 // Calculado a base de la supuesta compra de otras impresoras.
 export const COSTO_AMORTIZACION_MIN = 0.015; 
 
