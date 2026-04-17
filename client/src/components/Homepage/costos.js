@@ -7,7 +7,8 @@ export const COSTOS_FILAMENTO = {
 };
 
 export const COSTO_ELECTRICIDAD_MIN = 0.000724;
-export const COSTO_AMORTIZACION_MIN = 0.0143;
+// Calculado a base de la supuesta compra de otras impresoras.
+export const COSTO_AMORTIZACION_MIN = 0.015; 
 
 export const COSTOS_ADITIVOS = {
   Argolla: 0.17,
