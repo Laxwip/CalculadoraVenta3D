@@ -8,17 +8,17 @@ export const COSTOS_FILAMENTO = {
 
 export const COSTO_ELECTRICIDAD_MIN = 0.0016;
 // Calculado a base de la supuesta compra de otras impresoras.
-export const COSTO_AMORTIZACION_MIN = 0.015; 
+export const COSTO_AMORTIZACION_MIN = 0.016; 
 
 export const COSTOS_ADITIVOS = {
-  Argolla: 0.17,
+  Argolla: 0.28,
   Ziplock: 0.23,
   Switch: 0.23,
   Sticker: 0.10,
 };
 
 export const COSTO_POST_MIN = 0.0785;
-export const COSTO_ENVIO = 1.25;
+export const COSTO_ENVIO = 1.28;
 
 export function calcularCosto({
   filamento,
