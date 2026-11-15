@@ -61,7 +61,7 @@ export default function Homepage() {
     setResultado(
       <>
         <div className="linea color1">
-          <span className="label">Filamento ({tipoFilamento}):</span>
+          <span className="label">Filalento ({tipoFilamento}):</span>
           <span className="valor">{res.costoFilamento.toFixed(2)}</span>
         </div>
         <div className="linea color1">
